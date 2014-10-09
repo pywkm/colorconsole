@@ -2,4 +2,5 @@
 *.pyo
 build/
 dist/
+.idea/
 MANIFEST

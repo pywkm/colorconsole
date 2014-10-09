@@ -26,7 +26,7 @@ import sys
 import msvcrt
 from ctypes import windll, byref
 
-from colorconsole.wintypes import CONSOLE_SCREEN_BUFFER_INFO
+from colorconsole.wintypes import CONSOLE_SCREEN_BUFFER_INFO, STD_INPUT_HANDLE, STD_OUTPUT_HANDLE
 from colorconsole.ansicodes import escape, codes, colors_bk, colors_fg 
 
 SetConsoleTextAttribute = windll.kernel32.SetConsoleTextAttribute
@@ -41,19 +41,13 @@ ReadConsoleA = windll.kernel32.ReadConsoleA
 
 
 class Terminal:
-    STD_INPUT_HANDLE = -10
-    STD_OUTPUT_HANDLE = -11
-    WAIT_TIMEOUT = 0x00000102
-    WAIT_OBJECT_0 = 0
-
-
     def __init__(self):
         self.fg = None
         self.bk = None
         self.havecolor = 1
         self.dotitles = 1
-        self.stdout_handle = windll.kernel32.GetStdHandle(Terminal.STD_OUTPUT_HANDLE)
-        self.stdin_handle = windll.kernel32.GetStdHandle(Terminal.STD_INPUT_HANDLE)
+        self.stdout_handle = windll.kernel32.GetStdHandle(STD_OUTPUT_HANDLE)
+        self.stdin_handle = windll.kernel32.GetStdHandle(STD_INPUT_HANDLE)
         self.reset_attrib = self.__get_text_attr()
         self.savedX = 0
         self.savedY = 0

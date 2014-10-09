@@ -28,6 +28,11 @@ SHORT = c_short
 WORD = c_ushort
 DWORD = c_uint
 
+STD_INPUT_HANDLE = -10
+STD_OUTPUT_HANDLE = -11
+WAIT_TIMEOUT = 0x00000102
+WAIT_OBJECT_0 = 0
+
 
 class COORD(Structure):
     """struct in wincon.h."""

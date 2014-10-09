@@ -26,7 +26,8 @@
 
 # Added for Python 2.6 compatibility
 from __future__ import print_function
-import os, sys
+import os
+import sys
 
 colors = { "BLACK"   : 0,
           "BLUE"    : 1,

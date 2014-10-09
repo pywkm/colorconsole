@@ -121,9 +121,9 @@ class Terminal:
 
     def set_color(self, fg=None, bk=None):
         actual = self.__get_text_attr()
-        if fg == None:
+        if fg is None:
             fg = actual & 0x000F
-        if bk == None:
+        if bk is None:
             bk = actual & 0x00F0
         else:
             bk <<= 4

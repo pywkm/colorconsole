@@ -171,9 +171,9 @@ class Terminal:
         self.havecolor = 0
 
     def set_color(self, fg=None, bk=None):
-        if fg != None:
+        if fg is not None:
             sys.stdout.write(Terminal.escape + Terminal.colors_fg[fg])
-        if bk != None:
+        if bk is not None:
             sys.stdout.write(Terminal.escape + Terminal.colors_bk[bk])
 
     def set_title(self, title):

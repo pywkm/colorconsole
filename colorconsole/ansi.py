@@ -37,11 +37,11 @@ class Terminal:
         "bold":       escape + "01m",
         "clear":      escape + "2J",
         "clear_eol":  escape + "K",
-        "gotoxy":     escape + "%d;%dH",
-        "move_up":    escape + "%dA",
-        "move_down":  escape + "%dB",
-        "move_right": escape + "%dC",
-        "move_left":  escape + "%dD",
+        "gotoxy":     escape + "{0};{1}H",
+        "move_up":    escape + "{0}A",
+        "move_down":  escape + "{0}B",
+        "move_right": escape + "{0}C",
+        "move_left":  escape + "{0}D",
         "save":       escape + "s",
         "restore":    escape + "u",
         "dim":        escape + "2m",
@@ -146,7 +146,7 @@ class Terminal:
         sys.stdout.write(Terminal.codes["clear"])
 
     def gotoXY(self, x, y):
-        sys.stdout.write(Terminal.codes["gotoxy"] % (y, x))
+        sys.stdout.write(Terminal.codes["gotoxy"].format(y, x))
 
     def save_pos(self):
         sys.stdout.write(Terminal.codes["save"])
@@ -158,16 +158,16 @@ class Terminal:
         sys.stdout.write(Terminal.codes["reset"])
 
     def move_left(self, c=1):
-        sys.stdout.write(Terminal.codes["move_left"] % c)
+        sys.stdout.write(Terminal.codes["move_left"].format(c))
 
     def move_right(self, c=1):
-        sys.stdout.write(Terminal.codes["move_right"] % c)
+        sys.stdout.write(Terminal.codes["move_right"].format(c))
 
     def move_up(self, c=1):
-        sys.stdout.write(Terminal.codes["move_up"] % c)
+        sys.stdout.write(Terminal.codes["move_up"].format(c))
 
     def move_down(self, c=1):
-        sys.stdout.write(Terminal.codes["move_down"] % c)
+        sys.stdout.write(Terminal.codes["move_down"].format(c))
 
     def columns(self):
         return int(os.getenv("COLUMNS", self.ncolumns))
@@ -193,16 +193,16 @@ class Terminal:
         self.reset()
 
     def xterm256_set_fg_color(self, color):
-        sys.stdout.write(Terminal.escape + "38;5;%dm" % color)
+        sys.stdout.write(Terminal.escape + "38;5;{0}m".format(color))
 
     def xterm24bit_set_fg_color(self, r, g, b):
-        sys.stdout.write(Terminal.escape + "38;2;%d;%d;%dm" % (r, g, b))
+        sys.stdout.write(Terminal.escape + "38;2;{0};{1};{2}m".format(r, g, b))
 
     def xterm256_set_bk_color(self, color):
-        sys.stdout.write(Terminal.escape + "48;5;%dm" % color)
+        sys.stdout.write(Terminal.escape + "48;5;{0}m".format(color))
 
     def xterm24bit_set_bk_color(self, r, g, b):
-        sys.stdout.write(Terminal.escape + "48;2;%d;%d;%dm" % (r, g, b))
+        sys.stdout.write(Terminal.escape + "48;2;{0};{1};{2}m".format(r, g, b))
 
     def default_foreground(self):
         sys.stdout.write(Terminal.escape + "39m")

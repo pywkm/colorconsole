@@ -189,7 +189,6 @@ class Terminal:
 
     def reset_colors(self):
         self.default_background()
-        self.default_foreground
         self.reset()
 
     def xterm256_set_fg_color(self, color):

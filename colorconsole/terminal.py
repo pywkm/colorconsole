@@ -22,8 +22,6 @@
 # http://www.burgaud.com/bring-colors-to-the-windows-console-with-python/
 #
 
-# Added for Python 2.6 compatibility
-from __future__ import print_function
 import os
 
 

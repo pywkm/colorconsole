@@ -22,8 +22,6 @@
 # http://www.burgaud.com/bring-colors-to-the-windows-console-with-python/
 #
 
-# Added for Python 2.6 compatibility
-from __future__ import print_function
 import os
 import sys
 import termios
@@ -67,9 +65,7 @@ class Terminal:
         return ch
 
     def kbhit(self, timeout=0):
-        #self.print_at(40,1, "WAITING")
         dr, dw, de = select([sys.stdin], [], [], timeout)
-        #self.print_at(40,1, "DONE   ")
         return dr != []
 
     def no_colors(self):
@@ -88,11 +84,11 @@ class Terminal:
 
     def cprint(self, fg, bk, text):
         self.set_color(fg, bk)
-        print (text, end="")
+        sys.stdout.write(str(text))
 
     def print_at(self, x, y, text):
         self.gotoXY(x, y)
-        print(text, end="")
+        sys.stdout.write(str(text))
 
     def clear(self):
         sys.stdout.write(codes["clear"])

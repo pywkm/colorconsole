@@ -22,8 +22,6 @@
 # http://www.burgaud.com/bring-colors-to-the-windows-console-with-python/
 #
 
-# Added for Python 2.6 compatibility
-from __future__ import print_function
 import sys
 import msvcrt
 from ctypes import windll, byref
@@ -103,11 +101,11 @@ class Terminal:
 
     def cprint(self, fg, bk, text):
         self.set_color(fg, bk)
-        print (text, end="")
+        sys.stdout.write(str(text))
 
     def print_at(self, x, y, text):
         self.gotoXY(x, y)
-        print(text, end="")
+        sys.stdout.write(str(text))
 
     def clear(self):
         sys.stdout.write(codes["clear"])

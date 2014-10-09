@@ -57,7 +57,7 @@ def test():
                 t.print_at(50, 6, ord(t.getch()))
             t.print_at(40, 5, "%d %d" % (a, b))
             b += 1
-            a = b / 20.0 % 20
+            a = int(b / 20.0 % 20)
             t.print_at(40, 6, b)
             t.print_at(a, 20 + b % 20, "*")
             sys.stdout.flush()

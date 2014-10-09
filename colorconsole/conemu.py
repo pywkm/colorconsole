@@ -161,16 +161,16 @@ class Terminal:
         self.reset()
 
     def xterm256_set_fg_color(self, color):
-        sys.stdout.write(escape + "38;5;{0}m".format(color))
+        sys.stdout.write(escape + "38;5;{0:d}m".format(color))
 
     def xterm24bit_set_fg_color(self, r, g, b):
-        sys.stdout.write(escape + "38;2;{0};{1};{2}m".format(r, g, b))
+        sys.stdout.write(escape + "38;2;{0:d};{1:d};{2:d}m".format(r, g, b))
 
     def xterm256_set_bk_color(self, color):
-        sys.stdout.write(escape + "48;5;{0}m".format(color))
+        sys.stdout.write(escape + "48;5;{0:d}m".format(color))
 
     def xterm24bit_set_bk_color(self, r, g, b):
-        sys.stdout.write(escape + "48;2;{0};{1};{2}m".format(r, g, b))
+        sys.stdout.write(escape + "48;2;{0:d};{1:d};{2:d}m".format(r, g, b))
 
     def default_foreground(self):
         sys.stdout.write(escape + "39m")

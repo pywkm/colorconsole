@@ -26,38 +26,9 @@
 from __future__ import print_function
 import sys
 import msvcrt
-from ctypes import windll, Structure, c_short, c_ushort, byref, c_char_p, c_uint
+from ctypes import windll, byref
 
-SHORT = c_short
-WORD = c_ushort
-DWORD = c_uint
-
-
-class COORD(Structure):
-    """struct in wincon.h."""
-    _fields_ = [
-        ("X", SHORT),
-        ("Y", SHORT)]
-
-
-class SMALL_RECT(Structure):
-    """struct in wincon.h."""
-    _fields_ = [
-        ("Left", SHORT),
-        ("Top", SHORT),
-        ("Right", SHORT),
-        ("Bottom", SHORT)]
-
-
-class CONSOLE_SCREEN_BUFFER_INFO(Structure):
-    """struct in wincon.h."""
-    _fields_ = [
-        ("dwSize", COORD),
-        ("dwCursorPosition", COORD),
-        ("wAttributes", WORD),
-        ("srWindow", SMALL_RECT),
-        ("dwMaximumWindowSize", COORD)]
-
+from colorconsole.wintypes import CONSOLE_SCREEN_BUFFER_INFO
 
 SetConsoleTextAttribute = windll.kernel32.SetConsoleTextAttribute
 GetConsoleScreenBufferInfo = windll.kernel32.GetConsoleScreenBufferInfo

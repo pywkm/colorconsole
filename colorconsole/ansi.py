@@ -18,41 +18,40 @@
 #    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #
 # Inspired/copied/adapted from:
-# 
-# output.py from Gentoo and 
+#
+# output.py from Gentoo and
 # http://code.activestate.com/recipes/572182-how-to-implement-kbhit-on-linux/ and
 # http://www.burgaud.com/bring-colors-to-the-windows-console-with-python/
 #
 
 # Added for Python 2.6 compatibility
 from __future__ import print_function
-import os,sys
+import os, sys
 import termios
 from select import select
-      
 
 
 class Terminal:
     escape = "\x1b["
-    codes={
+    codes = {
            "reset": escape + "0m",
            "bold": escape + "01m",
            "clear": escape + "2J",
            "clear_eol": escape + "K",
            "gotoxy": escape + "%d;%dH",
-           "move_up": escape +"%dA",
+           "move_up": escape + "%dA",
            "move_down": escape + "%dB",
            "move_right": escape + "%dC",
            "move_left": escape + "%dD",
            "save": escape + "s",
-           "restore": escape +"u",
+           "restore": escape + "u",
            "dim": escape + "2m",
            "underline": escape + "4m",
            "blink": escape + "5m",
            "reverse": escape + "7m",
-           "invisible": escape + "8m",        
+           "invisible": escape + "8m",
           }
-    
+
     colors_fg = { 0 : "30m",
                   1 : "31m",
                   2 : "32m",
@@ -70,7 +69,7 @@ class Terminal:
                  14 : "1;36m",
                  15 : "1;37m"
                   }
-    
+
     colors_bk = { 0 : "40m",
                   1 : "41m",
                   2 : "42m",
@@ -80,7 +79,7 @@ class Terminal:
                   6 : "46m",
                   7 : "47m",
                   }
-    
+
     def __init__(self):
         self.fg = None
         self.bk = None
@@ -91,20 +90,18 @@ class Terminal:
         self.old_term = termios.tcgetattr(self.fd)
         self.new_term[3] = (self.new_term[3] & ~termios.ICANON & ~termios.ECHO)
         self.ncolumns = 80
-        self.nlines = 24        
+        self.nlines = 24
         if "TERM" in os.environ:
-           self.type = os.environ["TERM"]
+            self.type = os.environ["TERM"]
         else:
-           self.type = "UNKNOWN-ANSI"
+            self.type = "UNKNOWN-ANSI"
 
-        
-    def restore_buffered_mode(self):        
+    def restore_buffered_mode(self):
         termios.tcsetattr(self.fd, termios.TCSAFLUSH, self.old_term)
-
 
     def enable_unbuffered_input_mode(self):
         termios.tcsetattr(self.fd, termios.TCSAFLUSH, self.new_term)
-            
+
     def putch(self, ch):
         sys.stdout.write(ch)
 
@@ -118,63 +115,62 @@ class Terminal:
 
     def kbhit(self, timeout=0):
         #self.print_at(40,1, "WAITING")
-        dr,dw,de = select([sys.stdin], [], [], timeout)
+        dr, dw, de = select([sys.stdin], [], [], timeout)
         #self.print_at(40,1, "DONE   ")
         return dr != []
-        
+
     def no_colors(self):
-        self.havecolor = 0    
-        
-    def set_color(self, fg = None, bk = None):
+        self.havecolor = 0
+
+    def set_color(self, fg=None, bk=None):
         if fg != None:
             sys.stdout.write(Terminal.escape + Terminal.colors_fg[fg])
         if bk != None:
             sys.stdout.write(Terminal.escape + Terminal.colors_bk[bk])
-        
+
     def set_title(self, title):
-        if self.type in ["xterm","Eterm","aterm","rxvt", "xterm-color"]:
-             sys.stderr.write("\x1b]1;\x07\x1b]2;"+str(title)+"\x07")
-             sys.stderr.flush()
+        if self.type in ["xterm", "Eterm", "aterm", "rxvt", "xterm-color"]:
+            sys.stderr.write("\x1b]1;\x07\x1b]2;" + str(title) + "\x07")
+            sys.stderr.flush()
 
     def cprint(self, fg, bk, text):
         self.set_color(fg, bk)
-        print (text,end="")
-        
-    
+        print (text, end="")
+
     def print_at(self, x, y, text):
-            self.gotoXY(x, y)
-            print(text,end="")
-            
+        self.gotoXY(x, y)
+        print(text, end="")
+
     def clear(self):
         sys.stdout.write(Terminal.codes["clear"])
-        
-    def gotoXY(self, x,y):
+
+    def gotoXY(self, x, y):
         sys.stdout.write(Terminal.codes["gotoxy"] % (y, x))
-    
+
     def save_pos(self):
         sys.stdout.write(Terminal.codes["save"])
-        
+
     def restore_pos(self):
         sys.stdout.write(Terminal.codes["restore"])
-        
+
     def reset(self):
         sys.stdout.write(Terminal.codes["reset"])
-        
-    def move_left(self, c = 1):
+
+    def move_left(self, c=1):
         sys.stdout.write(Terminal.codes["move_left"] % c)
-        
-    def move_right(self, c = 1):
+
+    def move_right(self, c=1):
         sys.stdout.write(Terminal.codes["move_right"] % c)
-        
-    def move_up(self, c = 1):
+
+    def move_up(self, c=1):
         sys.stdout.write(Terminal.codes["move_up"] % c)
-        
-    def move_down(self, c = 1):
+
+    def move_down(self, c=1):
         sys.stdout.write(Terminal.codes["move_down"] % c)
-        
+
     def columns(self):
         return int(os.getenv("COLUMNS", self.ncolumns))
-    
+
     def lines(self):
         return int(os.getenv("LINES", self.nlines))
 
@@ -196,20 +192,20 @@ class Terminal:
         self.reset()
 
     def xterm256_set_fg_color(self, color):
-        sys.stdout.write(Terminal.escape+"38;5;%dm" % color)
+        sys.stdout.write(Terminal.escape + "38;5;%dm" % color)
 
-    def xterm24bit_set_fg_color(self, r, g,b):
-        sys.stdout.write(Terminal.escape+"38;2;%d;%d;%dm" % (r,g,b))
+    def xterm24bit_set_fg_color(self, r, g, b):
+        sys.stdout.write(Terminal.escape + "38;2;%d;%d;%dm" % (r, g, b))
 
     def xterm256_set_bk_color(self, color):
-        sys.stdout.write(Terminal.escape+"48;5;%dm" % color)
+        sys.stdout.write(Terminal.escape + "48;5;%dm" % color)
 
-    def xterm24bit_set_bk_color(self, r, g,b):
-        sys.stdout.write(Terminal.escape+"48;2;%d;%d;%dm" % (r,g,b))
+    def xterm24bit_set_bk_color(self, r, g, b):
+        sys.stdout.write(Terminal.escape + "48;2;%d;%d;%dm" % (r, g, b))
 
     def default_foreground(self):
-        sys.stdout.write(Terminal.escape+"39m")
+        sys.stdout.write(Terminal.escape + "39m")
 
     def default_background(self):
-        sys.stdout.write(Terminal.escape+"49m")
+        sys.stdout.write(Terminal.escape + "49m")
 

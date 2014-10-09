@@ -18,17 +18,17 @@
 #    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #
 # Inspired/copied/adapted from:
-# 
-# output.py from Gentoo and 
+#
+# output.py from Gentoo and
 # http://code.activestate.com/recipes/572182-how-to-implement-kbhit-on-linux/ and
 # http://www.burgaud.com/bring-colors-to-the-windows-console-with-python/
 #
 
 # Added for Python 2.6 compatibility
 from __future__ import print_function
-import os,sys
+import os, sys
 
-colors= { "BLACK"   : 0,
+colors = { "BLACK"   : 0,
           "BLUE"    : 1,
           "GREEN"   : 2,
           "CYAN"    : 3,
@@ -45,17 +45,18 @@ colors= { "BLACK"   : 0,
           "YELLOW"  : 14,
           "WHITE"   : 15  }
 
+
 def get_terminal(conEmu=False):
     if os.name == "posix":
-        import colorconsole.ansi       
+        import colorconsole.ansi
         return colorconsole.ansi.Terminal()
     elif os.name == "nt":
         if conEmu:
-          import colorconsole.conemu
-          return colorconsole.conemu.Terminal()
+            import colorconsole.conemu
+            return colorconsole.conemu.Terminal()
         else:
-          import colorconsole.win        
-          return colorconsole.win.Terminal()  
+            import colorconsole.win
+            return colorconsole.win.Terminal()
     else:
         raise RuntimeError("Unknown or unsupported terminal")
 
@@ -64,30 +65,30 @@ def test():
     t = get_terminal()
     t.enable_unbuffered_input_mode()
     t.clear()
-    t.gotoXY(0,0)
+    t.gotoXY(0, 0)
     t.set_title("Testing output")
     print("            Foreground 111111")
     print("Background   0123456789012345")
     for b in range(8):
         t.reset()
-        print("            ",end="")
-        print(b,end="")
+        print("            ", end="")
+        print(b, end="")
         for f in range(16):
-            t.cprint(f,b, f % 10)
+            t.cprint(f, b, f % 10)
         print()
     a = 0
     b = 0
     t.reset()
     try:
         while(True):
-            t.print_at(a , 20 + b % 20, ".")
+            t.print_at(a, 20 + b % 20, ".")
             if t.kbhit(0.01):
                 t.print_at(50, 6, ord(t.getch()))
-            t.print_at(40, 5, "%d %d" % (a,b))
-            b+=1
+            t.print_at(40, 5, "%d %d" % (a, b))
+            b += 1
             a = b / 20.0 % 20
-            t.print_at(40,6, b)
-            t.print_at(a , 20 + b % 20, "*")
+            t.print_at(40, 6, b)
+            t.print_at(a, 20 + b % 20, "*")
             sys.stdout.flush()
     except KeyboardInterrupt:
         pass
@@ -96,7 +97,6 @@ def test():
     t.restore_buffered_mode()
 
 
-
-               
 if __name__ == "__main__":
     test()
+

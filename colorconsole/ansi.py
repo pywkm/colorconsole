@@ -29,58 +29,10 @@ import sys
 import termios
 from select import select
 
+from colorconsole.ansicodes import escape, codes, colors_bk, colors_fg
+
 
 class Terminal:
-    escape = "\x1b["
-    codes = {
-        "reset":      escape + "0m",
-        "bold":       escape + "01m",
-        "clear":      escape + "2J",
-        "clear_eol":  escape + "K",
-        "gotoxy":     escape + "{0};{1}H",
-        "move_up":    escape + "{0}A",
-        "move_down":  escape + "{0}B",
-        "move_right": escape + "{0}C",
-        "move_left":  escape + "{0}D",
-        "save":       escape + "s",
-        "restore":    escape + "u",
-        "dim":        escape + "2m",
-        "underline":  escape + "4m",
-        "blink":      escape + "5m",
-        "reverse":    escape + "7m",
-        "invisible":  escape + "8m",
-    }
-
-    colors_fg = {
-        0: "30m",
-        1: "31m",
-        2: "32m",
-        3: "33m",
-        4: "34m",
-        5: "35m",
-        6: "36m",
-        7: "37m",
-        8: "1;30m",
-        9: "1;31m",
-        10: "1;32m",
-        11: "1;33m",
-        12: "1;34m",
-        13: "1;35m",
-        14: "1;36m",
-        15: "1;37m",
-    }
-
-    colors_bk = {
-        0: "40m",
-        1: "41m",
-        2: "42m",
-        3: "43m",
-        4: "44m",
-        5: "45m",
-        6: "46m",
-        7: "47m",
-    }
-
     def __init__(self):
         self.fg = None
         self.bk = None
@@ -125,9 +77,9 @@ class Terminal:
 
     def set_color(self, fg=None, bk=None):
         if fg is not None:
-            sys.stdout.write(Terminal.escape + Terminal.colors_fg[fg])
+            sys.stdout.write(escape + colors_fg[fg])
         if bk is not None:
-            sys.stdout.write(Terminal.escape + Terminal.colors_bk[bk])
+            sys.stdout.write(escape + colors_bk[bk])
 
     def set_title(self, title):
         if self.type in ["xterm", "Eterm", "aterm", "rxvt", "xterm-color"]:
@@ -143,31 +95,31 @@ class Terminal:
         print(text, end="")
 
     def clear(self):
-        sys.stdout.write(Terminal.codes["clear"])
+        sys.stdout.write(codes["clear"])
 
     def gotoXY(self, x, y):
-        sys.stdout.write(Terminal.codes["gotoxy"].format(y, x))
+        sys.stdout.write(codes["gotoxy"].format(y, x))
 
     def save_pos(self):
-        sys.stdout.write(Terminal.codes["save"])
+        sys.stdout.write(codes["save"])
 
     def restore_pos(self):
-        sys.stdout.write(Terminal.codes["restore"])
+        sys.stdout.write(codes["restore"])
 
     def reset(self):
-        sys.stdout.write(Terminal.codes["reset"])
+        sys.stdout.write(codes["reset"])
 
     def move_left(self, c=1):
-        sys.stdout.write(Terminal.codes["move_left"].format(c))
+        sys.stdout.write(codes["move_left"].format(c))
 
     def move_right(self, c=1):
-        sys.stdout.write(Terminal.codes["move_right"].format(c))
+        sys.stdout.write(codes["move_right"].format(c))
 
     def move_up(self, c=1):
-        sys.stdout.write(Terminal.codes["move_up"].format(c))
+        sys.stdout.write(codes["move_up"].format(c))
 
     def move_down(self, c=1):
-        sys.stdout.write(Terminal.codes["move_down"].format(c))
+        sys.stdout.write(codes["move_down"].format(c))
 
     def columns(self):
         return int(os.getenv("COLUMNS", self.ncolumns))
@@ -176,36 +128,36 @@ class Terminal:
         return int(os.getenv("LINES", self.nlines))
 
     def underline(self):
-        sys.stdout.write(Terminal.codes["underline"])
+        sys.stdout.write(codes["underline"])
 
     def blink(self):
-        sys.stdout.write(Terminal.codes["blink"])
+        sys.stdout.write(codes["blink"])
 
     def reverse(self):
-        sys.stdout.write(Terminal.codes["reverse"])
+        sys.stdout.write(codes["reverse"])
 
     def invisible(self):
-        sys.stdout.write(Terminal.codes["invisible"])
+        sys.stdout.write(codes["invisible"])
 
     def reset_colors(self):
         self.default_background()
         self.reset()
 
     def xterm256_set_fg_color(self, color):
-        sys.stdout.write(Terminal.escape + "38;5;{0}m".format(color))
+        sys.stdout.write(escape + "38;5;{0}m".format(color))
 
     def xterm24bit_set_fg_color(self, r, g, b):
-        sys.stdout.write(Terminal.escape + "38;2;{0};{1};{2}m".format(r, g, b))
+        sys.stdout.write(escape + "38;2;{0};{1};{2}m".format(r, g, b))
 
     def xterm256_set_bk_color(self, color):
-        sys.stdout.write(Terminal.escape + "48;5;{0}m".format(color))
+        sys.stdout.write(escape + "48;5;{0}m".format(color))
 
     def xterm24bit_set_bk_color(self, r, g, b):
-        sys.stdout.write(Terminal.escape + "48;2;{0};{1};{2}m".format(r, g, b))
+        sys.stdout.write(escape + "48;2;{0};{1};{2}m".format(r, g, b))
 
     def default_foreground(self):
-        sys.stdout.write(Terminal.escape + "39m")
+        sys.stdout.write(escape + "39m")
 
     def default_background(self):
-        sys.stdout.write(Terminal.escape + "49m")
+        sys.stdout.write(escape + "49m")
 

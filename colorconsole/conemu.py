@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-#
 #    colorconsole
 #    Copyright (C) 2010 Nilo Menezes
 #

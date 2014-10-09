@@ -25,7 +25,6 @@
 # Added for Python 2.6 compatibility
 from __future__ import print_function
 import os
-import sys
 
 
 def get_terminal(conEmu=False):

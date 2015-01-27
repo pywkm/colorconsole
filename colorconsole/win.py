@@ -1,5 +1,5 @@
 #    colorconsole
-#    Copyright (C) 2010 Nilo Menezes
+#    Copyright (C) 2010-2015 Nilo Menezes
 #
 #    This library is free software; you can redistribute it and/or
 #    modify it under the terms of the GNU Lesser General Public
@@ -21,29 +21,60 @@
 # http://code.activestate.com/recipes/572182-how-to-implement-kbhit-on-linux/ and
 # http://www.burgaud.com/bring-colors-to-the-windows-console-with-python/
 #
-
-import sys
+# Thanks to: Sylvain MOUQUET (https://github.com/sylvainmouquet) for set_title bug fixing and enhancements
+#
+#
+# Added for Python 2.6 compatibility
+from __future__ import print_function
+import os,sys
 import msvcrt
-from ctypes import windll, byref, c_char_p, c_wchar_p
+import ctypes
+from ctypes import windll, Structure, c_short, c_ushort, byref, c_char_p, c_uint, c_wchar_p
 
-from colorconsole.wintypes import DWORD, COORD, CONSOLE_SCREEN_BUFFER_INFO, STD_INPUT_HANDLE, STD_OUTPUT_HANDLE
+SHORT = c_short
+WORD = c_ushort
+DWORD = c_uint
 
+class COORD(Structure):
+  """struct in wincon.h."""
+  _fields_ = [
+    ("X", SHORT),
+    ("Y", SHORT)]
+
+class SMALL_RECT(Structure):
+  """struct in wincon.h."""
+  _fields_ = [
+    ("Left", SHORT),
+    ("Top", SHORT),
+    ("Right", SHORT),
+    ("Bottom", SHORT)]
+
+class CONSOLE_SCREEN_BUFFER_INFO(Structure):
+  """struct in wincon.h."""
+  _fields_ = [
+    ("dwSize", COORD),
+    ("dwCursorPosition", COORD),
+    ("wAttributes", WORD),
+    ("srWindow", SMALL_RECT),
+    ("dwMaximumWindowSize", COORD)]
+    
 
 SetConsoleTextAttribute = windll.kernel32.SetConsoleTextAttribute
 GetConsoleScreenBufferInfo = windll.kernel32.GetConsoleScreenBufferInfo
 # Added for compatibility between python 2 and 3
-if sys.version_info[0] == 3:
-    SetConsoleTitle = windll.kernel32.SetConsoleTitleW
-    cstring_p = c_wchar_p
-else:
-    SetConsoleTitle = windll.kernel32.SetConsoleTitleA
-    cstring_p = c_char_p
-#GetConsoleTitle = windll.kernel32.GetConsoleTitleW
+#if sys.version_info[0] == 3:
+SetConsoleTitle = windll.kernel32.SetConsoleTitleW
+cstring_p = c_wchar_p
+#else:
+#   SetConsoleTitle = Python2SetConsoleTitle #windll.kernel32.SetConsoleTitleA
+#   cstring_p = Python2CCharP # c_char_p
+GetConsoleTitle = windll.kernel32.GetConsoleTitleW
 SetConsoleCursorPosition = windll.kernel32.SetConsoleCursorPosition
 FillConsoleOutputCharacter = windll.kernel32.FillConsoleOutputCharacterA
 FillConsoleOutputAttribute = windll.kernel32.FillConsoleOutputAttribute
 #WaitForSingleObject = windll.kernel32.WaitForSingleObject
 #ReadConsoleA = windll.kernel32.ReadConsoleA
+WriteConsoleW = windll.kernel32.WriteConsoleW
 
 
 class Terminal:
@@ -109,13 +140,13 @@ class Terminal:
 
     def cprint(self, fg, bk, text):
         self.set_color(fg, bk)
-        sys.stdout.write(str(text))
-        sys.stdout.flush()
+        self.win_print (text) # print(text,end="")
+        #sys.stdout.flush()
 
     def print_at(self, x, y, text):
-        self.gotoXY(x, y)
-        sys.stdout.write(str(text))
-        sys.stdout.flush()
+            self.gotoXY(x, y)
+            self.win_print(text) # print(text,end="")
+            #sys.stdout.flush()
 
     def clear(self):              # From kb q99261
         rp = COORD()
@@ -185,4 +216,12 @@ class Terminal:
 
     def reset_colors(self):
         self.reset()
+
+    def win_print(self, x):
+        if(type(x)!=str and type(x)!=unicode):
+            x=str(x)
+        l = len(x)
+        w = DWORD(0)
+        WriteConsoleW(self.stdout_handle, cstring_p(x), l , byref(w) , None)
+        #sys.stdout.flush()
 

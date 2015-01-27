@@ -75,7 +75,10 @@ FillConsoleOutputAttribute = windll.kernel32.FillConsoleOutputAttribute
 #WaitForSingleObject = windll.kernel32.WaitForSingleObject
 #ReadConsoleA = windll.kernel32.ReadConsoleA
 WriteConsoleW = windll.kernel32.WriteConsoleW
+<<<<<<< HEAD
 
+=======
+>>>>>>> 844dc19f5517c8c3747d26f504483dbcf8069486
 
 class Terminal:
     def __init__(self):
@@ -224,4 +227,8 @@ class Terminal:
         w = DWORD(0)
         WriteConsoleW(self.stdout_handle, cstring_p(x), l , byref(w) , None)
         #sys.stdout.flush()
+<<<<<<< HEAD
+=======
+
+>>>>>>> 844dc19f5517c8c3747d26f504483dbcf8069486
 
